@@ -1,0 +1,43 @@
+# === Claude Code local files (NEVER commit) ===
+.claude/settings.json
+.claude/settings.local.json
+.claude/plans/
+.claude/projects/
+.claude/sessions/
+.claude/cache/
+.claude/file-history/
+.claude/shell-snapshots/
+.claude/telemetry/
+.claude/skills/
+.claude/plugins/
+.claude/backups/
+.claude/scheduled_tasks.json
+.claude/ide/
+.claude/worktrees/
+
+# === Secrets & credentials ===
+.env
+.env.*
+*.key
+*.pem
+*.p12
+credentials*
+secrets*
+*.secret
+
+# === OS files ===
+.DS_Store
+Thumbs.db
+*.swp
+*~
+
+# === Node/Build artifacts ===
+node_modules/
+dist/
+build/
+*.tgz
+
+# === IDE ===
+.vscode/
+.idea/
+*.code-workspace
