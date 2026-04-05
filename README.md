@@ -1,310 +1,261 @@
-# Claude Code Exposure Archive, Python Porting Context, and OmX Workflow Notes
+<div align="center">
 
-> This repository keeps a **publicly exposed Claude Code source snapshot** that became accessible on **March 31, 2026** through a source map exposure in the npm distribution, together with companion essay/context notes and OmX-assisted documentation work.
+# 从 Claude Code 学习 Agent 设计模式
 
----
+**通过研究世界上最成熟的开源 AI 编程助手，学习如何构建生产级智能体系统。**
 
-## Archive Context
+🌐 [English Version](README.en.md)
 
-This repository is maintained by a **university student** studying:
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Language](https://img.shields.io/badge/语言-中文%20%2F%20English-green)](#)
+[![Source](https://img.shields.io/badge/源码-Claude%20Code-blue)](https://github.com/PoorOtterBob/claude-code)
 
-- software supply-chain exposure and build artifact leaks
-- secure software engineering practices
-- agentic developer tooling architecture
-- defensive analysis of real-world CLI systems
-
-This archive is intended to support:
-
-- educational study
-- security research practice
-- architecture review
-- discussion of packaging and release-process failures
-
-Related research writing:
-
-- [*Is legal the same as legitimate: AI reimplementation and the erosion of copyleft*](https://writings.hongminhee.org/2026/03/legal-vs-legitimate/)
-
-The essay is dated **March 9, 2026**, so it should be read as companion analysis that predates the **March 31, 2026** source exposure documented below.
-
-## Why this archive exists (and what it is not)
-
-I initially kept this repository as a source-exposure archive so I could study the harness, tool wiring, and agent workflow. After sitting with the legal and ethical questions more seriously—and after reading the essay linked above—I no longer wanted the README to treat raw legality as the only frame.
-
-This branch therefore takes a smaller and more honest step: it keeps that essay in view as companion reading and makes the archive's research-only framing more explicit. This repository is still a mirrored TypeScript source snapshot for analysis; it is **not** a clean-room or Python rewrite.
-
-## Built with `oh-my-codex`
-
-The README/essay archival work on this branch was AI-assisted and orchestrated with Yeachan Heo's [oh-my-codex (OmX)](https://github.com/Yeachan-Heo/oh-my-codex), a workflow layer built around Codex.
-
-- **`$team` mode:** used for coordinated parallel review of repo fit, wording risk, and final architecture consistency.
-- **`$ralph` mode:** used for persistent execution, verification, and final architect sign-off before claiming completion.
-- **Codex-driven workflow:** this documentation/contextualization pass was completed with Codex under OmX orchestration.
-
-### OmX workflow screenshots
-
-![OmX workflow screenshot 1](assets/omx/omx-readme-review-1.png)
-
-*Ralph/team orchestration view while the README and essay context were being reviewed in terminal panes.*
-
-![OmX workflow screenshot 2](assets/omx/omx-readme-review-2.png)
-
-*Split-pane review and verification flow during the final README wording pass.*
-
-It does **not** claim ownership of the original code, and it should not be interpreted as an official Anthropic repository.
+</div>
 
 ---
 
-## How the Public Snapshot Became Accessible
+## 🧭 快速导航
 
-[Chaofan Shou (@Fried_rice)](https://x.com/Fried_rice) publicly noted that Claude Code source material was reachable through a `.map` file exposed in the npm package:
-
-> **"Claude code source code has been leaked via a map file in their npm registry!"**
->
-> — [@Fried_rice, March 31, 2026](https://x.com/Fried_rice/status/2038894956459290963)
-
-The published source map referenced unobfuscated TypeScript sources hosted in Anthropic's R2 storage bucket, which made the `src/` snapshot publicly downloadable.
-
----
-
-## Repository Scope
-
-Claude Code is Anthropic's CLI for interacting with Claude from the terminal to perform software engineering tasks such as editing files, running commands, searching codebases, and coordinating workflows.
-
-This repository contains a mirrored `src/` snapshot for research and analysis.
-
-- **Public exposure identified on**: 2026-03-31
-- **Language**: TypeScript
-- **Runtime**: Bun
-- **Terminal UI**: React + [Ink](https://github.com/vadimdemedes/ink)
-- **Scale**: ~1,900 files, 512,000+ lines of code
+| 你想做什么 | 去哪里 |
+|-----------|--------|
+| 从零开始学习，理解整体架构 | [📖 教程（9章）→](#教程章节) |
+| 我要设计工具/Agent，需要模板 | [🔧 工具包（6个模板）→](#智能体设计工具包) |
+| 在 Claude Code 里直接使用技能 | [🤖 技能（4个斜杠命令）→](#claude-code-技能) |
+| 深入查阅某个模块的技术细节 | [📚 参考文档（中文）→](#参考文档) |
 
 ---
 
-## Directory Structure
+## 🌟 我们做了什么，为什么重要
 
-```text
-src/
-├── main.tsx                 # Entrypoint orchestration (Commander.js-based CLI path)
-├── commands.ts              # Command registry
-├── tools.ts                 # Tool registry
-├── Tool.ts                  # Tool type definitions
-├── QueryEngine.ts           # LLM query engine
-├── context.ts               # System/user context collection
-├── cost-tracker.ts          # Token cost tracking
+### 背景
+
+Claude Code 是 Anthropic 开发的 AI 编程助手，其源代码包含 **1332 个 TypeScript 文件**，实现了：
+- 30+ 个工具（文件操作、Shell 执行、网络搜索、多智能体协调……）
+- 完整的多智能体编排系统（子智能体、Fork、Swarm）
+- 权限与安全系统
+- 自定义终端 UI 框架
+
+这些代码在 2026 年初被短暂开源（[github.com/PoorOtterBob/claude-code](https://github.com/PoorOtterBob/claude-code)），随后撤回。
+
+### 我们的贡献
+
+**我们做的事情：将 1332 个文件逆向工程为结构化的学习资源。**
+
+在我们之前，没有人系统地记录 Claude Code 的内部架构。要理解它，你需要自己读完 1332 个文件，花几周时间。
+
+我们用多智能体系统并行分析了全部源代码，提炼出：
+
+| 产出 | 数量 | 价值 |
+|------|------|------|
+| 逐步教程（中英双语） | 9 章 | 从零到理解完整架构 |
+| 设计模板（中英双语） | 6 个 | 可直接复制的实现模式 |
+| Claude Code 技能 | 4 个 | 设计时直接调用获取建议 |
+| 架构参考文档 | 10 EN + 10 ZH | 每个模块的深度文档 |
+| 可复用设计模式 | 12 个 | 生产验证的 Agent 架构模式 |
+
+### 重大意义
+
+1. **降低门槛**：任何人都能在几小时内掌握生产级 Agent 架构，而不是几周
+2. **模式提炼**：12 个设计模式经过真实生产验证（Claude Code 被数百万开发者使用）
+3. **中文社区**：为中文 AI 开发者社区提供高质量的 Agent 设计参考
+4. **开箱即用**：6 个模板 + 4 个技能，设计时直接引用，不需要从头发明
+
+> **⚠️ 版权说明**：本仓库中除 `` 文件夹外的所有文件，均来自曾短暂开源的 Claude Code 源码（[github.com/PoorOtterBob/claude-code](https://github.com/PoorOtterBob/claude-code)），版权归 Anthropic 所有，并非我们的贡献。**我们的全部贡献在 `` 文件夹中。**
+
+---
+
+## 📖 教程章节
+
+> **路径**: [`tutorial/zh-CN/`](tutorial/zh-CN/) · 新手友好 · 建议顺序阅读
+
+| # | 章节 | 你会学到什么 | 链接 |
+|---|------|------------|------|
+| 1 | **架构总览** | QueryEngine（查询引擎）、Tools（工具）、Tasks（任务）的关系；一个请求怎么从输入变成输出 | [→](tutorial/zh-CN/01-架构总览.md) |
+| 2 | **工具系统深入** | 工具是怎么定义的？buildTool() 模式；权限验证两阶段；如何设计自己的工具 | [→](tutorial/zh-CN/02-工具系统深入.md) |
+| 3 | **多智能体系统** | 为什么需要多个 Agent？如何生成子 Agent？Context Fork 是什么？ | [→](tutorial/zh-CN/03-多智能体系统.md) |
+| 4 | **任务生命周期** | Task 是什么？后台任务怎么运行？AsyncLocalStorage 隔离原理 | [→](tutorial/zh-CN/04-任务生命周期.md) |
+| 5 | **权限与安全** | 如何保护危险操作？权限冒泡是什么？沙箱机制 | [→](tutorial/zh-CN/05-权限与安全.md) |
+| 6 | **终端 UI 框架** | 为什么终端也能用 React？Ink 框架原理；无 GC 渲染技巧 | [→](tutorial/zh-CN/06-终端UI框架.md) |
+| 7 | **命令与插件** | 斜杠命令怎么工作？技能系统；如何扩展 Claude Code | [→](tutorial/zh-CN/07-命令与插件.md) |
+| 8 | **远程连接** | Bridge 是什么？会话管理；JWT 认证；崩溃恢复 | [→](tutorial/zh-CN/08-远程连接.md) |
+| 9 | **12个设计模式** | 完整模式手册，含问题→方案→适用场景 | [→](tutorial/zh-CN/09-设计模式总结.md) |
+
+📖 [查看英文教程](tutorial/en/) ·  [什么是 Claude Code？→ 官方文档](https://docs.anthropic.com/zh-CN/docs/claude-code/overview)
+
+---
+
+## 🔧 智能体设计工具包
+
+> **路径**: [`toolkit/zh-CN/`](toolkit/zh-CN/) · 设计时直接参考 · 含决策矩阵和检查清单
+
+| 模板 | 解决什么问题 | 链接 |
+|------|------------|------|
+| **工具设计模板** | 设计一个新工具：schema 定义、权限、进度上报、渲染 | [→](toolkit/zh-CN/工具设计模板.md) |
+| **智能体生成模板** | 选择生成模式（前台/后台/Fork）、上下文继承、通信方式 | [→](toolkit/zh-CN/智能体生成模板.md) |
+| **权限系统模板** | 两阶段验证、权限规则、破坏性操作检测、多智能体权限冒泡 | [→](toolkit/zh-CN/权限系统模板.md) |
+| **协调器工作流模板** | 研究→综合→实现→验证，四阶段编排，防确认偏差 | [→](toolkit/zh-CN/协调器工作流模板.md) |
+| **Swarm/团队模板** | 共享工作队列，智能体自主领取任务，权限同步 | [→](toolkit/zh-CN/Swarm团队模板.md) |
+| **任务系统模板** | 任务状态机、全局注册、僵尸保护、AsyncLocalStorage | [→](toolkit/zh-CN/任务系统模板.md) |
+
+📖 [查看英文工具包](toolkit/en/)
+
+---
+
+## 🤖 Claude Code 技能
+
+> **路径**: [`skills/`](skills/) · 安装一次，设计时随时调用
+
+### 安装
+
+```bash
+cp -r skills/agent-design         ~/.claude/skills/
+cp -r skills/find-pattern         ~/.claude/skills/
+cp -r skills/tool-design          ~/.claude/skills/
+cp -r skills/multi-agent-workflow ~/.claude/skills/
+```
+
+重启 Claude Code，技能自动出现。
+
+### 可用技能
+
+| 技能 | 命令 | 你会得到 |
+|------|------|---------|
+| **agent-design** | `/agent-design 我要构建XXX` | 完整架构设计：适用模式、结构图、实现路线图 |
+| **find-pattern** | `/find-pattern 我遇到了XXX问题` | 精准匹配对应设计模式 + 指向具体实现文件 |
+| **tool-design** | `/tool-design 我需要一个XXX工具` | 完整 buildTool() 规范：schema、验证、安全检查 |
+| **multi-agent-workflow** | `/multi-agent-workflow 我要完成XXX复杂任务` | 完整编排方案：智能体角色、通信、阶段、故障恢复 |
+
+📖 [技能安装详细说明](skills/README.md)
+
+---
+
+## 📚 参考文档
+
+### 中文参考 [`zh-CN/`](zh-CN/)
+
+> 每个模块的深度文档，适合已理解基础后查阅细节
+
+[00 总览](zh-CN/00-总览.md) · [01 工具系统](zh-CN/01-工具系统.md) · [02 多智能体](zh-CN/02-多智能体.md) · [03 任务系统](zh-CN/03-任务系统.md) · [04 工具目录](zh-CN/04-工具目录.md) · [05 命令系统](zh-CN/05-命令系统.md) · [06 终端UI](zh-CN/06-终端UI.md) · [07 远程连接](zh-CN/07-远程连接.md) · [08 工具与核心](zh-CN/08-工具与核心.md) · [09 设计模式](zh-CN/09-设计模式.md)
+
+### English Reference [`en/`](en/)
+
+[00 Overview](en/00-OVERVIEW.md) · [01 Tool System](en/01-TOOL-SYSTEM.md) · [02 Multi-Agent](en/02-MULTI-AGENT.md) · [03 Tasks](en/03-TASK-SYSTEM.md) · [04 Tools Catalog](en/04-TOOLS-CATALOG.md) · [05 Commands](en/05-COMMAND-SYSTEM.md) · [06 Ink UI](en/06-INK-UI.md) · [07 Bridge](en/07-BRIDGE-SERVER.md) · [08 Utils](en/08-UTILS-CORE.md) · [09 Patterns](en/09-PATTERNS.md)
+
+---
+
+## ⚡ 12 个核心设计模式
+
+> 从 Claude Code 生产代码中提炼，可直接用于你的 Agent 系统设计
+
+| # | 模式 | 解决的问题 | 详见 |
+|---|------|-----------|------|
+| 1 | **工具接口 + 安全默认值** | 30+ 工具扩展无样板代码 | [→](tutorial/zh-CN/02-工具系统深入.md) |
+| 2 | **上下文 Fork** | 父子 Agent 共享 Prompt 缓存，零额外 Token 成本 | [→](tutorial/zh-CN/03-多智能体系统.md) |
+| 3 | **扇出→综合→实现→验证** | 复杂多阶段任务编排，防确认偏差 | [→](toolkit/zh-CN/协调器工作流模板.md) |
+| 4 | **两阶段权限验证** | 逻辑检查（validateInput）与授权（checkPermissions）分离 | [→](toolkit/zh-CN/权限系统模板.md) |
+| 5 | **AsyncLocalStorage 隔离** | 同进程多 Agent，无需手动传递上下文 | [→](tutorial/zh-CN/04-任务生命周期.md) |
+| 6 | **渐进式结果交付** | 长时间工具边运行边显示进度，不阻塞 UI | [→](toolkit/zh-CN/工具设计模板.md) |
+| 7 | **延迟工具加载** | 工具太多浪费 Token，按需发现加载 | [→](zh-CN/01-工具系统.md) |
+| 8 | **XML 异步通知** | 后台 Agent 完成时主动通知主对话 | [→](toolkit/zh-CN/智能体生成模板.md) |
+| 9 | **共享工作队列（Swarm）** | Agent 自主领取任务，无中心瓶颈 | [→](toolkit/zh-CN/Swarm团队模板.md) |
+| 10 | **多来源命令注册** | 内置+技能+插件统一发现，按场景过滤 | [→](tutorial/zh-CN/07-命令与插件.md) |
+| 11 | **无 GC 打包缓冲区** | 高频终端渲染不卡顿，消除垃圾回收暂停 | [→](tutorial/zh-CN/06-终端UI框架.md) |
+| 12 | **协调者 + 草稿板** | 跨 Agent 共享发现，避免通过提示词传大量文本 | [→](toolkit/zh-CN/协调器工作流模板.md) |
+
+---
+
+## 🏗️ 架构速览
+
+```
+                    ┌──────────────────────────┐
+                    │       用户输入             │
+                    └─────────┬────────────────┘
+                              │
+                    ┌─────────▼────────────────┐
+                    │    命令注册中心             │  src/commands.ts
+                    │    （斜杠命令解析）          │
+                    └─────────┬────────────────┘
+                              │
+                    ┌─────────▼────────────────┐
+                    │      QueryEngine           │  src/QueryEngine.ts
+                    │   （对话循环 · 大脑）        │
+                    └──────┬──────┬─────────────┘
+                           │      │
+               ┌───────────┘      └───────────┐
+               │                              │
+     ┌─────────▼──────────┐       ┌───────────▼──────────┐
+     │     工具层           │       │     任务层             │
+     │   src/tools/ (30+)  │       │   src/tasks/          │
+     │                     │       │                       │
+     │  BashTool            │       │  LocalShellTask        │
+     │  FileEditTool        │       │  LocalAgentTask        │
+     │  GrepTool            │       │  InProcessTeammate     │
+     │  AgentTool ──────────┼───────┼──► 生成子 Agent        │
+     │  MCPTool             │       │                       │
+     │                     │       │  AsyncLocalStorage     │
+     │  权限系统             │       │  （隔离）              │
+     └─────────┬───────────┘       └───────────┬──────────┘
+               └──────────────┬────────────────┘
+                              │
+                    ┌─────────▼────────────────┐
+                    │    Ink UI 框架             │  src/ink/
+                    │  （CLI 的 React）           │
+                    └──────────────────────────┘
+```
+
+---
+
+## 📂 本仓库结构说明
+
+```
+/（仓库根目录）
 │
-├── commands/                # Slash command implementations (~50)
-├── tools/                   # Agent tool implementations (~40)
-├── components/              # Ink UI components (~140)
-├── hooks/                   # React hooks
-├── services/                # External service integrations
-├── screens/                 # Full-screen UIs (Doctor, REPL, Resume)
-├── types/                   # TypeScript type definitions
-├── utils/                   # Utility functions
+├──           ← ✅ 我们的贡献（本项目全部原创内容）
+│   ├── README.md        ← 你正在看的这个文件（中文主版）
+│   ├── README.en.md     ← English version
+│   ├── tutorial/
+│   │   ├── zh-CN/       ← 中文教程（9章，新手友好）
+│   │   └── en/          ← English tutorial
+│   ├── toolkit/
+│   │   ├── zh-CN/       ← 中文设计模板（6个）
+│   │   └── en/          ← English templates
+│   ├── skills/          ← Claude Code 技能（4个斜杠命令）
+│   ├── zh-CN/           ← 中文架构参考（10篇）
+│   └── en/              ← English reference（10 docs）
 │
-├── bridge/                  # IDE and remote-control bridge
-├── coordinator/             # Multi-agent coordinator
-├── plugins/                 # Plugin system
-├── skills/                  # Skill system
-├── keybindings/             # Keybinding configuration
-├── vim/                     # Vim mode
-├── voice/                   # Voice input
-├── remote/                  # Remote sessions
-├── server/                  # Server mode
-├── memdir/                  # Persistent memory directory
-├── tasks/                   # Task management
-├── state/                   # State management
-├── migrations/              # Config migrations
-├── schemas/                 # Config schemas (Zod)
-├── entrypoints/             # Initialization logic
-├── ink/                     # Ink renderer wrapper
-├── buddy/                   # Companion sprite
-├── native-ts/               # Native TypeScript utilities
-├── outputStyles/            # Output styling
-├── query/                   # Query pipeline
-└── upstreamproxy/           # Proxy configuration
+└── src/ 等其他目录      ← ⚠️ 来自曾短暂开源的 Claude Code 源码
+                           （版权归 Anthropic 所有，非我们贡献）
+                           来源：github.com/PoorOtterBob/claude-code
 ```
 
 ---
 
-## Architecture Summary
+## 📊 项目统计
 
-### 1. Tool System (`src/tools/`)
-
-Every tool Claude Code can invoke is implemented as a self-contained module. Each tool defines its input schema, permission model, and execution logic.
-
-| Tool | Description |
-|---|---|
-| `BashTool` | Shell command execution |
-| `FileReadTool` | File reading (images, PDFs, notebooks) |
-| `FileWriteTool` | File creation / overwrite |
-| `FileEditTool` | Partial file modification (string replacement) |
-| `GlobTool` | File pattern matching search |
-| `GrepTool` | ripgrep-based content search |
-| `WebFetchTool` | Fetch URL content |
-| `WebSearchTool` | Web search |
-| `AgentTool` | Sub-agent spawning |
-| `SkillTool` | Skill execution |
-| `MCPTool` | MCP server tool invocation |
-| `LSPTool` | Language Server Protocol integration |
-| `NotebookEditTool` | Jupyter notebook editing |
-| `TaskCreateTool` / `TaskUpdateTool` | Task creation and management |
-| `SendMessageTool` | Inter-agent messaging |
-| `TeamCreateTool` / `TeamDeleteTool` | Team agent management |
-| `EnterPlanModeTool` / `ExitPlanModeTool` | Plan mode toggle |
-| `EnterWorktreeTool` / `ExitWorktreeTool` | Git worktree isolation |
-| `ToolSearchTool` | Deferred tool discovery |
-| `CronCreateTool` | Scheduled trigger creation |
-| `RemoteTriggerTool` | Remote trigger |
-| `SleepTool` | Proactive mode wait |
-| `SyntheticOutputTool` | Structured output generation |
-
-### 2. Command System (`src/commands/`)
-
-User-facing slash commands invoked with `/` prefix.
-
-| Command | Description |
-|---|---|
-| `/commit` | Create a git commit |
-| `/review` | Code review |
-| `/compact` | Context compression |
-| `/mcp` | MCP server management |
-| `/config` | Settings management |
-| `/doctor` | Environment diagnostics |
-| `/login` / `/logout` | Authentication |
-| `/memory` | Persistent memory management |
-| `/skills` | Skill management |
-| `/tasks` | Task management |
-| `/vim` | Vim mode toggle |
-| `/diff` | View changes |
-| `/cost` | Check usage cost |
-| `/theme` | Change theme |
-| `/context` | Context visualization |
-| `/pr_comments` | View PR comments |
-| `/resume` | Restore previous session |
-| `/share` | Share session |
-| `/desktop` | Desktop app handoff |
-| `/mobile` | Mobile app handoff |
-
-### 3. Service Layer (`src/services/`)
-
-| Service | Description |
-|---|---|
-| `api/` | Anthropic API client, file API, bootstrap |
-| `mcp/` | Model Context Protocol server connection and management |
-| `oauth/` | OAuth 2.0 authentication flow |
-| `lsp/` | Language Server Protocol manager |
-| `analytics/` | GrowthBook-based feature flags and analytics |
-| `plugins/` | Plugin loader |
-| `compact/` | Conversation context compression |
-| `policyLimits/` | Organization policy limits |
-| `remoteManagedSettings/` | Remote managed settings |
-| `extractMemories/` | Automatic memory extraction |
-| `tokenEstimation.ts` | Token count estimation |
-| `teamMemorySync/` | Team memory synchronization |
-
-### 4. Bridge System (`src/bridge/`)
-
-A bidirectional communication layer connecting IDE extensions (VS Code, JetBrains) with the Claude Code CLI.
-
-- `bridgeMain.ts` — Bridge main loop
-- `bridgeMessaging.ts` — Message protocol
-- `bridgePermissionCallbacks.ts` — Permission callbacks
-- `replBridge.ts` — REPL session bridge
-- `jwtUtils.ts` — JWT-based authentication
-- `sessionRunner.ts` — Session execution management
-
-### 5. Permission System (`src/hooks/toolPermission/`)
-
-Checks permissions on every tool invocation. Either prompts the user for approval/denial or automatically resolves based on the configured permission mode (`default`, `plan`, `bypassPermissions`, `auto`, etc.).
-
-### 6. Feature Flags
-
-Dead code elimination via Bun's `bun:bundle` feature flags:
-
-```typescript
-import { feature } from 'bun:bundle'
-
-// Inactive code is completely stripped at build time
-const voiceCommand = feature('VOICE_MODE')
-  ? require('./commands/voice/index.js').default
-  : null
-```
-
-Notable flags: `PROACTIVE`, `KAIROS`, `BRIDGE_MODE`, `DAEMON`, `VOICE_MODE`, `AGENT_TRIGGERS`, `MONITOR_TOOL`
+| 指标 | 数量 |
+|------|------|
+| 分析的 Claude Code 源文件 | 1,332 个 TypeScript 文件 |
+| 文档化的工具 | 30+ |
+| 内置智能体类型 | 6 |
+| 中文教程章节 | 9 |
+| 设计模板 | 6 个（中英各版） |
+| Claude Code 技能 | 4 个斜杠命令 |
+| 架构参考文档 | 10 EN + 10 ZH |
+| 可复用设计模式 | 12 |
+| 参考文件总数 | 50+ |
 
 ---
 
-## Key Files in Detail
+## 贡献
 
-### `QueryEngine.ts` (~46K lines)
+欢迎提 PR！如发现错误、想补充模式或改进教程，请提交 Issue 或 PR。保持中英双语格式。
 
-The core engine for LLM API calls. Handles streaming responses, tool-call loops, thinking mode, retry logic, and token counting.
+## 许可证
 
-### `Tool.ts` (~29K lines)
+`` 目录下的内容：MIT 许可证
 
-Defines base types and interfaces for all tools — input schemas, permission models, and progress state types.
+其余目录（Claude Code 源码部分）：版权归 Anthropic 所有
 
-### `commands.ts` (~25K lines)
+## 致谢
 
-Manages registration and execution of all slash commands. Uses conditional imports to load different command sets per environment.
-
-### `main.tsx`
-
-Commander.js-based CLI parser and React/Ink renderer initialization. At startup, it overlaps MDM settings, keychain prefetch, and GrowthBook initialization for faster boot.
-
----
-
-## Tech Stack
-
-| Category | Technology |
-|---|---|
-| Runtime | [Bun](https://bun.sh) |
-| Language | TypeScript (strict) |
-| Terminal UI | [React](https://react.dev) + [Ink](https://github.com/vadimdemedes/ink) |
-| CLI Parsing | [Commander.js](https://github.com/tj/commander.js) (extra-typings) |
-| Schema Validation | [Zod v4](https://zod.dev) |
-| Code Search | [ripgrep](https://github.com/BurntSushi/ripgrep) |
-| Protocols | [MCP SDK](https://modelcontextprotocol.io), LSP |
-| API | [Anthropic SDK](https://docs.anthropic.com) |
-| Telemetry | OpenTelemetry + gRPC |
-| Feature Flags | GrowthBook |
-| Auth | OAuth 2.0, JWT, macOS Keychain |
-
----
-
-## Notable Design Patterns
-
-### Parallel Prefetch
-
-Startup time is optimized by prefetching MDM settings, keychain reads, and API preconnect in parallel before heavy module evaluation begins.
-
-```typescript
-// main.tsx — fired as side-effects before other imports
-startMdmRawRead()
-startKeychainPrefetch()
-```
-
-### Lazy Loading
-
-Heavy modules (OpenTelemetry, gRPC, analytics, and some feature-gated subsystems) are deferred via dynamic `import()` until actually needed.
-
-### Agent Swarms
-
-Sub-agents are spawned via `AgentTool`, with `coordinator/` handling multi-agent orchestration. `TeamCreateTool` enables team-level parallel work.
-
-### Skill System
-
-Reusable workflows defined in `skills/` are executed through `SkillTool`. Users can add custom skills.
-
-### Plugin Architecture
-
-Built-in and third-party plugins are loaded through the `plugins/` subsystem.
-
----
-
-## Research / Ownership Disclaimer
-
-- This repository is an **educational and defensive security research archive** maintained by a university student.
-- It exists to study source exposure, packaging failures, and the architecture of modern agentic CLI systems.
-- The original Claude Code source remains the property of **Anthropic**.
-- This repository is **not affiliated with, endorsed by, or maintained by Anthropic**.
+本项目分析了 Anthropic 的 Claude Code 架构。所有洞察来自曾公开的源代码。这是独立的教育项目，与 Anthropic 无关联。
